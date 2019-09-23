@@ -1,0 +1,5 @@
+{
+  "jwtPrivateKey": "phuketList_jwtPrivateKey",
+  "db": "phuketlist_db",
+  "client_domain": "phuketlist_client"
+}

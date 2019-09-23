@@ -1,0 +1,56 @@
+{
+  "name": "app",
+  "jest": {
+    "testPathIgnorePatterns": [
+      "integration"
+    ]
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll --verbose",
+    "client": "npm start --prefix client",
+    "start": "node index.js",
+    "server": "nodemon index.js"
+  },
+  "engines": {
+    "version": "10.15.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^15.0.1",
+    "bcrypt": "^3.0.4",
+    "bcryptjs": "^2.4.3",
+    "build": "^0.1.4",
+    "compression": "^1.7.4",
+    "config": "^3.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "helmet": "^3.16.0",
+    "jimp": "^0.6.0",
+    "joi": "^14.3.1",
+    "joi-objectid": "^2.0.0",
+    "jsonwebtoken": "^8.5.0",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.5.4",
+    "multer": "^1.4.1",
+    "nodemailer": "^5.1.1",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^2.0.0",
+    "postmark": "^2.2.5",
+    "react-filter-search": "^1.0.8",
+    "sequelize": "^5.1.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "jest": "^24.7.1",
+    "nodemon": "^1.18.10",
+    "supertest": "^4.0.2"
+  }
+}

@@ -1,0 +1,5 @@
+{
+   "jwtPrivateKey": "mySecureKey",
+   "db": "mongodb://localhost/phuketlist",
+   "client_domain": "http://localhost:3000"
+}

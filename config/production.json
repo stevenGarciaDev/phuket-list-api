@@ -1,0 +1,5 @@
+{
+   "jwtPrivateKey": "mySecureKey",
+   "db": "mongodb://stevenGarciaDev:baseballhs1@ds048368.mlab.com:48368/phuketlist",
+   "client_domain": "https://phuket-list.herokuapp.com"
+}
