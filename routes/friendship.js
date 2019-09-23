@@ -7,65 +7,39 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 
-// @Description for each user, traverse through and save their email as a key 
+// @Description for each user, traverse through and save their email as a key
 // and set the value to be true
 function generateFriendsHashTable(users) {
   let hashTable = {};
   for (let user of users) {
-    hashTable[user.email] = true;
+    hashTable[user.userEmail] = true;
   }
   return hashTable;
 }
 
 router.get('/potentialFriends/:email', async (req, res) => {
-  // try {
-  //   console.log("req.body.email", req.body.email);
-  //   const user = await User.findOne({ email: req.body.email });
-  //   let friends = await Friendship.findOne({owner:user._id});
-  //   friends = friends.friends;
-  //   var i;
-  //   var j;
-  //   var k;
-  //   const users = await User.find();
-  //   var test = [];
-  //   var arr = [];
-  //   for(i=0;i<users.length;i++){
-  //     k=0;
-  //     for(j=0;j<friends.length;j++){
-  //       if(friends[j].userEmail === users[i].email){
-  //         k=1;
-  //         console.log("pop");
-  //       }
-  //     }
-  //     if(k==0){
-  //       var obj ={'email':users[i].email,'name':users[i].name,'photo':users[i].photo,'status':'Add Friend'};
-  //       arr.push(obj);
-  //     }
-  //   }
-  //   res.send(arr);
-  // } catch(exc) {
-  //   console.log("unable to retrieve", exc);
-  // }
-
-
-  /* ----- update */
   try {
     const currentUser = await User.findOne({ email: req.params.email });
     const users = await User.find();
-    
+
     const response = await Friendship.findOne({ owner: currentUser._id });
-    let friends = response.friends;
+    let friends = response ? response.friends : [];
     const friendsHashTable = generateFriendsHashTable(friends);
 
     // filter out users that are already in friend's list
     // and ensure user's profile is not included in list
     let remainingUsers = users.filter(user => (
-      user.email != currentUser.email || !(user.email in friendsHashTable)
+      user.email != currentUser.email && !(user.email in friendsHashTable)
     ));
 
     remainingUsers = remainingUsers.map(user => {
       let userObj = user.toObject();
-      return {...userObj, status: 'Add Friend'};
+      return {
+        name: user.name,
+        email: user.email,
+        photo: user.photo ? user.photo : '',
+        status: 'Add Friend'
+      };
     });
 
     res.send(remainingUsers);
@@ -81,7 +55,7 @@ router.post('/createRequest', (req, res) => {
 router.get('/getFriends',async(req,res)=>{
   const user = await User.findOne({email:req.query[0]});
   let friends = await Friendship.findOne({owner: user._id});
-  friends = friends.friends;
+  friends = friends ? friends.friends : [];
   res.send(friends);
 });
 
@@ -93,9 +67,9 @@ router.get('/getFriendstatus',async(req,res)=>{
   for(i=0;i<friends.length;i++){
     if(friends[i].userFreinds === req.query.fremail)
       res.send(friends[i].status);
-}
+  }
 
-res.send('Add Friend');
+  res.send('Add Friend');
 })
 
 router.put('/acceptFriend',async(req,res) =>{
@@ -168,13 +142,15 @@ router.put('/removeFriend', async(req,res) => {
   userToRemove = userToRemove[0];
   let currentUser = await User.find({email: req.body.currentUserEmail});
   currentUser = currentUser[0];
+  console.log("userToRemove", userToRemove);
+  console.log("currentUser", currentUser);
 
   let userToRemoveFriends = await Friendship.find({owner: userToRemove._id});
   userToRemoveFriends = userToRemoveFriends[0];
   let currentUserFriends = await Friendship.find({owner: currentUser._id});
   currentUserFriends = currentUserFriends[0];
 
-  // in friendship.friends, remove/slice,
+  //in friendship.friends, remove/slice,
   userToRemoveFriends.friends = userToRemoveFriends.friends.filter(f => f.userEmail !== currentUser.email);
   currentUserFriends.friends = currentUserFriends.friends.filter(f => f.userEmail !== userToRemove.email);
 
@@ -186,6 +162,7 @@ router.put('/removeFriend', async(req,res) => {
 
 router.post("/addFriend", async (req, res) => {
   try {
+    console.log("addFriend endpoint hit");
     // get both users
     let sender = await User.find({ email: req.body.currentUserEmail });
     sender = sender[0];
@@ -196,7 +173,7 @@ router.post("/addFriend", async (req, res) => {
     let friendshipSender = new Friend({ userid: sender._id, username: sender.name, userEmail: sender.email, userPhoto: sender.photo, status: 'Unfriend' });
     let friendshipReceiver = new Friend({ userid: receiver._id, username: receiver.name, userEmail: receiver.email, userPhoto: receiver.photo, status: 'Unfriend' });
 
-    // add frienships and save
+    // // add frienships and save
     let senderFriendList = await Friendship.find({ owner: sender._id });
     senderFriendList = senderFriendList[0];
     let receiverFriendList = await Friendship.find({ owner: receiver._id });
