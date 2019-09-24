@@ -146,7 +146,7 @@ router.post('/updateProfileImage', auth, async (req, res) => {
   }
 });
 
-router.post('/updateBio/:user_id', async (req, res) => {
+router.post('/updateBio/:user_id', async (req, res) => {////////////   //////////
   try {
     const user = await User.findById(req.params.user_id);
     console.log("user is ", user);
