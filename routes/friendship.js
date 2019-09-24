@@ -142,8 +142,6 @@ router.put('/removeFriend', async(req,res) => {
   userToRemove = userToRemove[0];
   let currentUser = await User.find({email: req.body.currentUserEmail});
   currentUser = currentUser[0];
-  console.log("userToRemove", userToRemove);
-  console.log("currentUser", currentUser);
 
   let userToRemoveFriends = await Friendship.find({owner: userToRemove._id});
   userToRemoveFriends = userToRemoveFriends[0];
