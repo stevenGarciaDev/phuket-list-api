@@ -146,4 +146,17 @@ router.post('/newMessage/:senderId/:groupId', async (req, res) => {
   }
 });
 
+router.post('/readMessage/:groupId/:messageId', async (req, res) => {
+  try {
+    await MessageGroup.updateOne(
+      {"_id": req.params.groupId,
+        "messages._id" : req.params.messageId}, 
+      {"$set":{ "messages.$.isRead" : true}});
+  } catch (ex) {
+    console.log("Unable to update", ex);
+  }
+
+});
+
+
 module.exports = router;
