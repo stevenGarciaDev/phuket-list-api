@@ -33,23 +33,48 @@ router.post('/newGroup', async (req, res) => {
 router.post('/newMessageGroup', async (req, res) => {
   try {
     let memberIds = req.body.members[0]; // any members in this newMsgGroup
-    let mesGroupName = req.body.name; // name of group chat
+    const mesGroupName = req.body.name; // name of group chat
    
-    console.log("memberIds");
-    console.log(memberIds);
-    console.log(mesGroupName);
-
-    const msgGroup = await MessageGroup.find({ name: mesGroupName }); // find msg group with same name as the one sent
+    //console.log("memberIds");
+    //console.log(memberIds);
+   console.log( mesGroupName);
+    
+      
+    let msgGroup = await MessageGroup.findOne({ name: mesGroupName}); // find msg group with same name as the one sent
     console.log("members [] : ", msgGroup);
-    //if(msgGroup != null ) // check if message group being created already exists
-    //{ 
-      //if yes, update that msg group with new members
-      //msgGroup.members.push("sddf");
-      //console.log("members [][] : ", msgGroup);
-     // res.send(msgGroup);
-   // }
-   // else{ 
-      // if not make new group
+    console.log( mesGroupName);
+    //msgGroup = await MessageGroup.find({ name: '' }); // find msg group with same name as the one sent
+    console.log("members2 [] : ", msgGroup);
+
+    if(msgGroup)
+    {
+      let userIsInGroup = false;
+      for (var i=0; i < msgGroup.members.length; i++) 
+      {
+        if(msgGroup.members[i] == memberIds)
+        {
+          userIsInGroup = true;
+        }
+       
+      }
+      
+      
+      if (!userIsInGroup)
+      {
+        msgGroup.members.push(memberIds);
+        
+        await msgGroup.save();
+      }
+      
+      //newMembers.push(memberIds);
+      //msgGroup.members = newMembers;
+      console.log(msgGroup.members);
+
+      
+      
+      res.send(msgGroup);
+    }
+    else{
       const newGroup = new MessageGroup({
         dateCreated: Date.now(),
         name: mesGroupName,
@@ -60,10 +85,35 @@ router.post('/newMessageGroup', async (req, res) => {
       await newGroup.save();
       
       res.send(newGroup);
-    //}
+
+
+    }
+
+    
+     
+    
     
   } catch (exception) {
     console.log("Unable to create ", exception);
+  }
+});
+
+router.post('/updateGroupName', async (req, res) => {
+  try {
+
+    let mesGroupName = req.body.name; // name of group chat
+    let newName = req.body.newName;
+    let msgGroup = await MessageGroup.findOne( {name: mesGroupName});
+
+    console.log(msgGroup);
+
+    msgGroup.name = newName;
+    await msgGroup.save();
+    
+    res.send(msgGroup.name);
+   
+  } catch (exception) {
+    console.log("Unable to update ", exception);
   }
 });
 
