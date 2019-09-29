@@ -196,16 +196,15 @@ router.post('/newMessage/:senderId/:groupId', async (req, res) => {
   }
 });
 
-router.post('/readMessage/:groupId/:messageId', async (req, res) => {
+router.post('/readMessage/:groupId/:messageId/:userId', async (req, res) => {
   try {
     await MessageGroup.updateOne(
       {"_id": req.params.groupId,
         "messages._id" : req.params.messageId}, 
-      {"$set":{ "messages.$.isRead" : true}});
+      {"$addToSet":{ "messages.$.isRead": req.params.userId}});
   } catch (ex) {
     console.log(ex);
   }
-
 });
 
 router.get('/unread/count/:userId', async (req, res) => {
@@ -216,7 +215,7 @@ router.get('/unread/count/:userId', async (req, res) => {
         { "$unwind": "$messages" }, // Deconstructs messages from prior match
         { "$match": // match only unread messages & not sent by user
           {"$and": [
-            {"messages.isRead": false},
+            {"messages.isRead": {"$ne" : new mongoose.Types.ObjectId(req.params.userId)}},
             {"messages.sender": {"$ne" : new mongoose.Types.ObjectId(req.params.userId)}},
             ]
           }
@@ -224,6 +223,7 @@ router.get('/unread/count/:userId', async (req, res) => {
         { "$project": { "_id":0, "messages": 1} } // only project messages field.
       ]
     );
+    console.log(data)
     res.send(data);
   } catch (ex) {
     console.log("Cannot retrieve unread messages", ex);

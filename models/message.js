@@ -14,11 +14,12 @@ const messageSchema = new mongoose.Schema({
     trim: true,
     maxlength: 144,
   },
-  isRead: {
-    type: Boolean,
-    default: false,
-    required: true
-  },
+  isRead: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
+  ],
   dateCreated: {
     type: Date,
     required: true
