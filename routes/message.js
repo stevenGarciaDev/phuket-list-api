@@ -203,10 +203,31 @@ router.post('/readMessage/:groupId/:messageId', async (req, res) => {
         "messages._id" : req.params.messageId}, 
       {"$set":{ "messages.$.isRead" : true}});
   } catch (ex) {
-    console.log("Unable to update", ex);
+    console.log(ex);
   }
 
 });
 
+router.get('/unread/count/:userId', async (req, res) => {
+  try {
+    const data = await MessageGroup.aggregate(
+      [
+        { "$match": {"members": new mongoose.Types.ObjectId(req.params.userId)}}, // Grabs only groups with user
+        { "$unwind": "$messages" }, // Deconstructs messages from prior match
+        { "$match": // match only unread messages & not sent by user
+          {"$and": [
+            {"messages.isRead": false},
+            {"messages.sender": {"$ne" : new mongoose.Types.ObjectId(req.params.userId)}},
+            ]
+          }
+        },
+        { "$project": { "_id":0, "messages": 1} } // only project messages field.
+      ]
+    );
+    res.send(data);
+  } catch (ex) {
+    console.log("Cannot retrieve unread messages", ex);
+  }
+});
 
 module.exports = router;
