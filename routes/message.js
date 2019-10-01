@@ -118,6 +118,42 @@ router.post('/updateGroupName', async (req, res) => {
 });
 
 
+router.post('/removeFromGroup', async (req, res) => {
+  try {
+
+    let mesGroupName = req.body.taskName; // name of group chat
+    let user = req.body.userID; // current user
+    let msgGroup = await MessageGroup.findOne( {name: mesGroupName}); // find group chat with this task name
+    let newMembers = [];
+
+    console.log("delte : ", mesGroupName);
+    console.log("delte : ", user);
+
+    for (let i = 0; i < msgGroup.members.length; i++) // populate new members array with all members in
+                                                      // in that group except for the removed user
+    {
+
+      if(msgGroup.members[i] != user)
+      {
+        newMembers.push(msgGroup.members[i]);
+      }
+
+      
+    }
+    
+    msgGroup.members = newMembers; // change current group members to new members
+    console.log("delte 3 : ", msgGroup.members);
+    //console.log(msgGroup);
+    await msgGroup.save();
+    
+    res.send(msgGroup);
+   
+  } catch (exception) {
+    console.log("Unable to update ", exception);
+  }
+});
+
+
 router.get('/retrieveMessageGroups/:user_id', async (req, res) => {
   // console.log('IO: ', req.io);
   // const io = req.io;
