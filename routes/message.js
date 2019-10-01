@@ -32,7 +32,7 @@ router.post('/newGroup', async (req, res) => {
 
 router.post('/newMessageGroup', async (req, res) => {
   try {
-    let memberIds = req.body.members[0]; // any members in this newMsgGroup
+    let memberIds = req.body.members; // any members in this newMsgGroup
     const mesGroupName = req.body.name; // name of group chat
    
     //console.log("memberIds");
@@ -49,7 +49,7 @@ router.post('/newMessageGroup', async (req, res) => {
     if(msgGroup)
     {
       let userIsInGroup = false;
-      for (var i=0; i < msgGroup.members.length; i++) 
+      for (var i=0; i < msgGroup.members.length; i++) // find user in the already existing msg group
       {
         if(msgGroup.members[i] == memberIds)
         {
@@ -59,7 +59,7 @@ router.post('/newMessageGroup', async (req, res) => {
       }
       
       
-      if (!userIsInGroup)
+      if (!userIsInGroup) // if user is not already in this group, add him or her to it
       {
         msgGroup.members.push(memberIds);
         
