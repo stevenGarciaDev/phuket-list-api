@@ -50,10 +50,10 @@ app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/bucketList', bucketList);
 app.use('/api/listitem', listItem);
-app.use('/api/post/', post);
-app.use('/api/comment/', comment);
-app.use('/api/taskGroup/', post);
-app.use('/api/friends/', friends);
+app.use('/api/post', post);
+app.use('/api/comment', comment);
+app.use('/api/taskGroup', post);
+app.use('/api/friends', friends);
 app.use('/api/messages', message);
 app.use(passport.initialize());
 require("./config/passport");
@@ -74,5 +74,5 @@ const server = httpServer.listen(port, () => {
   console.log(`Listening on port ${port}...`);
 });
 
-module.exports = server;
+module.exports.server = server;
 module.exports.app = app;
