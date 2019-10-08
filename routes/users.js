@@ -326,6 +326,25 @@ router.get('/UserProfileBio/:user_id', async (req, res) => {
 });
 
 
+router.get('/RemoveUser/:user_id', async (req, res) => {
+  try {
+    const response = await User.findOne( {_id: req.params.user_id} );
+    //let userID = req.body.id;
+    //let userQuery = await User.findOne({ _id: userID});
+
+    //await User.remove(response); // removes every user for some reason
+    response.remove({});
+    await User.save();
+
+    console.log("USERRR: ", response._id, " ", response.name );
+
+    res.send(response);
+  } catch (ex) {
+    console.log("Could not remove user ");
+  }
+});
+
+
 
 
 module.exports = router;
