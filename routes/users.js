@@ -91,7 +91,7 @@ router.get('/settingInfo/:user_id', async (req, res) => {
     isActive: user["isActiveAccount"],
   };
   //const userss = await User.findById(req.params.user_id);
-  //console.log(userss[detailName]);
+
   res.send(info);
 });
 
