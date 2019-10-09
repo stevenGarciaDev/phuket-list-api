@@ -264,6 +264,28 @@ router.put('/updatePassword',async(req,res)=>{
   }
 });
 
+router.put('/matchPassword',async(req,res)=>{
+  let user = await User.findOne({email: req.body.params.params.email});
+  if(user){
+    const salt = await bcrypt.genSalt(10);
+    let tpassword = req.body.params.params.data.Password;
+    tpassword = await bcrypt.hash(tpassword, salt);
+    if(user.password === tpassword.password){
+      user.password = req.body.params.params.data.newPassword;
+      user.password = await bcrypt.hash(user.password, salt);
+      await user.save();
+      res.send("Password changed");
+      console.log("password changed");
+    }
+    else{
+      res.send("Old Password doesnt match");
+    }
+  }
+  else{
+    res.send("User not found");
+  }
+});
+
 router.get('/resetPassword',async (req, res) => {
   let user =await  User.findOne({resetPasswordToken: req.query.token});
   if(user){
