@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { User } = require('../../models/user');
 const { BucketList } = require('../../models/bucketList');
-const { List Item } = require('../../models/listItem');
+const { ListItem } = require('../../models/listItem');
 const mongoose = require('mongoose');
 let server;
 

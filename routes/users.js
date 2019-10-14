@@ -7,7 +7,10 @@ const express = require("express");
 const router = express.Router();
 const auth = require('../middleware/auth');
 const { BucketList } = require("../models/bucketList");
-const {Friendship} = require("../models/friendship");
+const { Friendship } = require("../models/friendship");
+const { MessageGroup } = require("../models/messageGroup");
+const { Post } = require("../models/post");
+const { TaskGroup } = require("../models/taskgroup");
 const crypto =require( 'crypto');
 const nodemailer = require('nodemailer');
 const Sequelize =require( 'sequelize');
@@ -239,7 +242,7 @@ router.post('/forgotPassword', async (req,  res)=> {
       if (err) {
         console.error('there was an error: ', err);
       } else {
-       
+
         res.status(200).json('recovery email sent');
       }
     });
@@ -326,17 +329,46 @@ router.get('/UserProfileBio/:user_id', async (req, res) => {
 });
 
 
-router.get('/RemoveUser/:user_id', async (req, res) => {
+router.delete('/removeUser/:user_id', async (req, res) => {
   try {
-    const response = await User.findOne( {_id: req.params.user_id} );
-    //let userID = req.body.id;
-    //let userQuery = await User.findOne({ _id: userID});
+    // remove the User's post
+    const postResponse = await Post.deleteMany({ author: req.params.user_id });
 
-    //await User.remove(response); // removes every user for some reason
-    response.remove({});
-    await User.save();
+    // remove the User's comments
+    // $pull is used to remove an element from an array (subdocument)
+    // and remove the User's likes on Posts
+    const posts = await Post.update({},
+      {$pull: {"comments": { "author": req.params.user_id }} },
+      {$pull: {"likes": req.params.user_id }}
+    );
 
-    console.log("USERRR: ", response._id, " ", response.name );
+    // remove the User's bucket list
+    const bucketList = await BucketList.deleteOne({ owner: req.params.user_id });
+
+    // remove the User from their MessageGroups
+    // and their associated messages
+    let msgGroups = await MessageGroup.update({},
+      {$pull: {"members": req.params.user_id }}
+    );
+
+    // remove User's messages
+    msgGroups = await MessageGroup.update({},
+      {$pull: {"messages": { "sender": req.params.user_id }} }
+    );
+
+    // remove from User's friends list
+    const friendsList = await Friendship.update({},
+      {$pull: {"friends": { "userid": req.params.user_id }}}
+    );
+
+    // remove User from TaskGroups
+    const taskGroups = await TaskGroup.update({},
+      {$pull: {"groupMembers": req.params.user_id }}
+    );
+
+    // remove the User
+    const response = await User.deleteOne({ _id: req.params.user_id });
+    console.log("response", response);
 
     res.send(response);
   } catch (ex) {

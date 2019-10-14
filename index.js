@@ -68,11 +68,10 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-
 const port = process.env.PORT || 3900;
 const server = httpServer.listen(port, () => {
   console.log(`Listening on port ${port}...`);
-});
+})
 
-module.exports.server = server;
+module.exports = server;
 module.exports.app = app;

@@ -1,15 +1,14 @@
 {
   "name": "app",
   "jest": {
-    "testPathIgnorePatterns": [
-      "integration"
-    ]
+
   },
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll --verbose",
+    "test-integration": "jest --watchAll --verbose --runInBand",
     "client": "npm start --prefix client",
     "start": "node index.js",
     "server": "nodemon index.js"
