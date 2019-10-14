@@ -94,7 +94,7 @@ router.get('/settingInfo/:user_id', async (req, res) => {
     isActive: user["isActiveAccount"],
   };
   //const userss = await User.findById(req.params.user_id);
-  //console.log(userss[detailName]);
+
   res.send(info);
 });
 
@@ -264,6 +264,33 @@ router.put('/updatePassword',async(req,res)=>{
   }
   else{
     res.send("User not found");
+  }
+});
+
+router.put('/matchPassword',async(req,res)=>{
+  try {
+    let user = await User.findOne({_id: req.body.userId});
+    if(user){
+      const validPassword = await bcrypt.compare(req.body.oldPass, user.password);
+      if(validPassword){
+        const salt = await bcrypt.genSalt(10);
+        user.password = req.body.newPass;
+        user.password = await bcrypt.hash(user.password, salt);
+        await user.save();
+        res.send(true);
+        console.log("password changed");
+      }
+      else{
+        console.log("password failed to change: old password did not match");
+        res.send(false);
+      }
+    }
+    else{
+      console.log("password failed to change: user could not be found");
+      res.send(false);
+    }
+  } catch (e) {
+    console.log("error: failed to update user password.", e);
   }
 });
 
