@@ -294,6 +294,30 @@ router.put('/matchPassword',async(req,res)=>{
   }
 });
 
+router.put('/confirmPassword',async(req,res)=>{
+  try {
+    let user = await User.findOne({_id: req.body.user});
+    if(user){
+      const validPassword = await bcrypt.compare(req.body.confirmPass, user.password);
+      console.log(user.password);
+      if(validPassword){
+        res.send(true);
+        console.log("password match");
+      }
+      else{
+        console.log("password did not match");
+        res.send(false);
+      }
+    }
+    else{
+      console.log("User Not found");
+      res.send(false);
+    }
+  } catch (e) {
+    console.log("error:.", e);
+  }
+});
+
 router.get('/resetPassword',async (req, res) => {
   let user =await  User.findOne({resetPasswordToken: req.query.token});
   if(user){
