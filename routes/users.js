@@ -403,7 +403,17 @@ router.delete('/removeUser/:user_id', async (req, res) => {
   }
 });
 
+router.get('/privacy/:user_id', async (req, res) => {
+  try {
+    const response = await User.findOne( {_id: req.params.user_id}, { isPrivateProfile: 1, _id: 0});
 
+    console.log(response);
+
+    res.send(response);
+  } catch (e) {
+    console.log("error: ", e);
+  }
+});
 
 
 module.exports = router;
