@@ -388,7 +388,7 @@ router.delete('/removeUser/:user_id', async (req, res) => {
     // remove the User's comments
     // $pull is used to remove an element from an array (subdocument)
     // and remove the User's likes on Posts
-    const posts = await Post.update({},
+    const posts = await Post.updateMany({},
       {$pull: {"comments": { "author": req.params.user_id }} },
       {$pull: {"likes": req.params.user_id }}
     );
@@ -398,22 +398,22 @@ router.delete('/removeUser/:user_id', async (req, res) => {
 
     // remove the User from their MessageGroups
     // and their associated messages
-    let msgGroups = await MessageGroup.update({},
+    let msgGroups = await MessageGroup.updateMany({},
       {$pull: {"members": req.params.user_id }}
     );
 
-    // remove User's messages
-    msgGroups = await MessageGroup.update({},
+    let userMsgGroups = await MessageGroup.updateMany({},
       {$pull: {"messages": { "sender": req.params.user_id }} }
     );
+    console.log("userMsgGroups!", userMsgGroups);
 
     // remove from User's friends list
-    const friendsList = await Friendship.update({},
+    const friendsList = await Friendship.updateMany({},
       {$pull: {"friends": { "userid": req.params.user_id }}}
     );
 
     // remove User from TaskGroups
-    const taskGroups = await TaskGroup.update({},
+    const taskGroups = await TaskGroup.updateMany({},
       {$pull: {"groupMembers": req.params.user_id }}
     );
 
