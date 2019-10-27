@@ -35,13 +35,16 @@ router.post('/:id', auth, async (req, res) => {
 
   //retrieve user's bucket list
   try {
-    let bucketList = await BucketList.find({ owner: req.params.id });
+    await BucketList
+      .updateOne({ 
+        owner: req.params.id,
+        "listItems._id": {$ne: listItem._id}
+      }, 
+      {$addToSet: {
+        listItems: listItem
+      }});
 
-    // add item to bucket list
-    bucketList[0].listItems.push(listItem);
-    const response = await bucketList[0].save();
-
-    // return updated list to user
+    let bucketList = await BucketList.find({ owner: req.params.id })
     res.send(bucketList[0].listItems);
   } catch (ex) {
     console.log('unable to complete');
