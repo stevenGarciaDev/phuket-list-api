@@ -363,7 +363,7 @@ router.get('/UserProfilePhoto/:user_id', async (req, res) => {
 router.get('/user/basic/:id', async (req, res) => {
   try {
     const data = await User.findById(req.params.id)
-    .select('name isPrivateProfile bio');
+    .select('name isPrivateProfile bio photo');
   res.send(data);
   } catch (ex) {
     console.log("Cannot retrieve user information." + ex);
