@@ -115,6 +115,11 @@ router.post('/', auth, async (req, res, next) => {
   res.send(post);
 });
 
+router.post('/delPost',async (req, res) => {
+  console.log(req.body.id);
+
+ } );
+
 router.post('/:id', async (req, res) => {
     console.log("getting backend request");
 });
