@@ -117,7 +117,10 @@ router.post('/', auth, async (req, res, next) => {
 
 router.post('/delPost',async (req, res) => {
   console.log(req.body.id);
-
+  let post = await Post.find({_id: req.body.id});
+  console.log(post); 
+  const response = await Post.deleteOne({_id: req.body.id});
+  res.send(response);
  } );
 
 router.post('/:id', async (req, res) => {
