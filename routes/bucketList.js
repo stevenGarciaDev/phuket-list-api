@@ -21,6 +21,16 @@ router.get('/users/:id', async (req, res) => {
   res.send(users);
 });
 
+// Get six most recent users that have a list item
+router.get('/users/:id/latest', async (req, res) => {
+  const users = await BucketList
+    .find({ 'listItems._id': req.params.id })
+    .sort({_id: -1})
+    .limit(6)
+    .select('owner');
+  res.send(users);
+});
+
 // Create a new List item for the current bucket list
 router.post('/:id', auth, async (req, res) => {
   // create list item
