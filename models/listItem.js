@@ -12,6 +12,11 @@ const listItemSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
     required: true
+  },
+  dateAdded: {
+    type: Date,
+    default: Date.now,
+    required: true
   }
 });
 
