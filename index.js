@@ -9,6 +9,7 @@ const comment = require("./routes/comment");
 const taskGroup = require("./routes/taskGroup");
 const friends = require("./routes/friendship");
 const message = require("./routes/message");
+const recommendations = require("./routes/recommendation");
 var cors = require('cors');
 const express = require("express");
 const app = express();
@@ -55,6 +56,7 @@ app.use('/api/comment', comment);
 app.use('/api/taskGroup', post);
 app.use('/api/friends', friends);
 app.use('/api/messages', message);
+app.use('/api/recommendations', recommendations);
 app.use(passport.initialize());
 require("./config/passport");
 
