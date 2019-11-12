@@ -31,6 +31,18 @@ router.get('/users/:id/latest', async (req, res) => {
   res.send(users);
 });
 
+// Lazy-load group's users, 10 at a time
+router.get('/users/:id/:pagenum', async (req, res) => {
+  var userCount = 10;
+  const users = await BucketList
+    .find({ 'listItems._id': req.params.id },)
+    .sort({_id: -1})
+    .skip(userCount * req.params.pagenum)
+    .limit(userCount)
+    .select('owner');
+  res.send(users);
+});
+
 // Create a new List item for the current bucket list
 router.post('/:id', auth, async (req, res) => {
   // create list item
