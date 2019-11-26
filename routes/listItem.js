@@ -10,7 +10,7 @@ router.get('/task', async (req, res) => {
 			{ "taskName": { $regex: '.*' + searchKeyword + '.*',
 							$options: 'i'  }
 			}, function(err,res){
-			}).select('taskName').limit(5).exec().then(doc => {
+			}).sort({ "_id":-1}).select('taskName').limit(5).exec().then(doc => {
 			    res.send(doc); // <-- returns a pending promise
 			});
 });
