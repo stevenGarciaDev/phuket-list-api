@@ -17,6 +17,12 @@ mongoose.connect(db)
 
 const seedData = [
   { keyword: "taco", type: "food" },
+  { keyword: "tacos", type: "food" },
+  { keyword: "chocolate", type: "food" },
+  { keyword: "india", type: "destination" },
+  { keyword: "indian", type: "food" },
+  { keyword: "china", type: "destination" },
+  { keyword: "chinese", type: "food" },
   { keyword: "pizza", type: "food" },
   { keyword: "sushi", type: "food"},
   { keyword: "burrito", type: "food" },
@@ -25,14 +31,16 @@ const seedData = [
   { keyword: "italy", type: "destination" },
   { keyword: "italian", type: "food" },
   { keyword: "disney", type: "destination" },
+  { keyword: "disneyland", type: "destination" },
   { keyword: "universal studios", type: "destination"  },
   { keyword: "skydiving", type: "event" },
   { keyword: "french", type: "food" },
   { keyword: "france", type: "destination" },
+  { keyword: "paris", type: "destination" },
   { keyword: "korea", type: "destination" },
   { keyword: "japan", type: "destination" },
   { keyword: "vietnam", type: "destination" },
-  { keyword: "thailand", type: "destination" },
+  { keyword: "thailand", type: "destination" }
 ];
 
 Recommendation.insertMany(seedData, function(err, doc) {
