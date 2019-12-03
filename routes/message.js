@@ -14,8 +14,8 @@ router.post('/newGroup', async (req, res) => {
     if (!isUniqueGroupName) {
       res.status(400).json({ error: "A group with that name already exist." });
       return;
-    } 
-    
+    }
+
     let memberIds = req.body.members.map(m => m.id);
     const newGroup = new MessageGroup({
       dateCreated: Date.now(),
@@ -34,12 +34,12 @@ router.post('/newMessageGroup', async (req, res) => {
   try {
     let memberIds = req.body.members; // any members in this newMsgGroup
     const mesGroupName = req.body.name; // name of group chat
-   
+
     //console.log("memberIds");
     //console.log(memberIds);
    console.log( mesGroupName);
-    
-      
+
+
     let msgGroup = await MessageGroup.findOne({ name: mesGroupName}); // find msg group with same name as the one sent
     console.log("members [] : ", msgGroup);
     console.log( mesGroupName);
@@ -55,23 +55,23 @@ router.post('/newMessageGroup', async (req, res) => {
         {
           userIsInGroup = true;
         }
-       
+
       }
-      
-      
+
+
       if (!userIsInGroup) // if user is not already in this group, add him or her to it
       {
         msgGroup.members.push(memberIds);
-        
+
         await msgGroup.save();
       }
-      
+
       //newMembers.push(memberIds);
       //msgGroup.members = newMembers;
       console.log(msgGroup.members);
 
-      
-      
+
+
       res.send(msgGroup);
     }
     else{
@@ -83,16 +83,16 @@ router.post('/newMessageGroup', async (req, res) => {
       });
       console.log("new group is ", newGroup);
       await newGroup.save();
-      
+
       res.send(newGroup);
 
 
     }
 
-    
-     
-    
-    
+
+
+
+
   } catch (exception) {
     console.log("Unable to create ", exception);
   }
@@ -109,9 +109,9 @@ router.post('/updateGroupName', async (req, res) => {
 
     msgGroup.name = newName;
     await msgGroup.save();
-    
+
     res.send(msgGroup.name);
-   
+
   } catch (exception) {
     console.log("Unable to update ", exception);
   }
@@ -138,16 +138,16 @@ router.post('/removeFromGroup', async (req, res) => {
         newMembers.push(msgGroup.members[i]);
       }
 
-      
+
     }
-    
+
     msgGroup.members = newMembers; // change current group members to new members
     console.log("delte 3 : ", msgGroup.members);
     //console.log(msgGroup);
     await msgGroup.save();
-    
+
     res.send(msgGroup);
-   
+
   } catch (exception) {
     console.log("Unable to update ", exception);
   }
@@ -164,7 +164,7 @@ router.get('/retrieveMessageGroups/:user_id', async (req, res) => {
     const response = await MessageGroup
       .find({ members: req.params.user_id })
       .sort({ dateCreated: -1 });
-  
+
     res.send(response);
   } catch (ex) {
     console.log("Unable to retrieve ", ex);
@@ -236,7 +236,7 @@ router.post('/readMessage/:groupId/:messageId/:userId', async (req, res) => {
   try {
     await MessageGroup.updateOne(
       {"_id": req.params.groupId,
-        "messages._id" : req.params.messageId}, 
+        "messages._id" : req.params.messageId},
       {"$addToSet":{ "messages.$.isRead": req.params.userId}});
   } catch (ex) {
     console.log(ex);
